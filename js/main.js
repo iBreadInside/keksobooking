@@ -1,6 +1,6 @@
-function helloWorld(name) {
-  console.log('Твоё имя')
-  console.log(name);
+// Случайное целое число из заданного диапазона
+let getRandomInt = (min, max) => {
+  return (min < 0 || min >= max) ? 'Введен некорректный диапазон' : Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-helloWorld('Igor');
+getRandomInt(3, 15)
