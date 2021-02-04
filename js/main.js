@@ -1,21 +1,15 @@
-// Случайное целое число из заданного диапазона
-const getRandomInt = (min, max) => {
-  return (min < 0 || max < 0) ? 'Доступны только положительные значения' :
-    (min >= max) ? (
-      [min, max] = [max, min],
-      Math.floor(Math.random() * (max - min + 1)) + min) :
-      Math.floor(Math.random() * (max - min + 1)) + min;
+// Функция вызова случайного числа
+const getRandomNumber = (min, max, fractionDigits) => {
+  const fractionMultiplier = Math.pow(10, fractionDigits)
+  min = Math.abs(min)
+  max = Math.abs(max) // Условия для поиска среди положительных значений
+  if (min > max) {
+    [min, max] = [max, min]
+  }
+  return Math.round(
+    (Math.random() * (max - min) + min) * fractionMultiplier,
+  ) / fractionMultiplier
 }
 
-getRandomInt(4, 3)
-
-// Случайное число с плавающей точкой
-const getRandomFloat = (min, max, decimal) => {
-  return (min < 0 || max < 0) ? 'Доступны только положительные значения' :
-    (min >= max) ? (
-      [min, max] = [max, min],
-      ((Math.random() * (max - min)) + min).toFixed(decimal)) :
-      (Math.random() * (max - min) + min).toFixed(decimal);
-}
-
-getRandomFloat(4.2, 4.1, 3)
+getRandomNumber(-15, -3, 3) // Получаем дробное число
+getRandomNumber(-25, 3, 0) // Получаем целое число
