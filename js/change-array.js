@@ -1,4 +1,4 @@
-import getRandomNumber from './get-random-number.js';
+import {getRandomNumber} from './get-random-number.js';
 
 let changeArray = (array) => {
   let finalArray = [];

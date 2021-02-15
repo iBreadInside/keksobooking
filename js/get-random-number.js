@@ -1,5 +1,5 @@
 // Функция вызова случайного числа
-const getRandomNumber = (min, max, fractionDigits) => {
+export const getRandomNumber = (min, max, fractionDigits) => {
   const fractionMultiplier = Math.pow(10, fractionDigits);
   min = Math.abs(min);
   max = Math.abs(max); // Условия для поиска среди положительных значений
@@ -8,5 +8,3 @@ const getRandomNumber = (min, max, fractionDigits) => {
     (Math.random() * (max - min) + min) * fractionMultiplier,
   ) / fractionMultiplier;
 };
-
-export {getRandomNumber};
