@@ -1,4 +1,9 @@
-import {getRandomNumber, shuffle, changeArray} from './proxy-functions.js';
+// Функция вызова случайного числа
+import {getRandomNumber} from './get-random-number.js';
+
+// Random sorting
+import {shuffle} from './shuffle.js';
+import {changeArray} from './change-array.js';
 
 // Make apartments array
 const APARTMENTS_AMOUNT = 10;
