@@ -1,56 +1,61 @@
-// Функция вызова случайного числа
-import {getRandomNumber} from './get-random-number.js';
+import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
 
-// Random sorting
-import {shuffle} from './shuffle.js';
-import {changeArray} from './change-array.js';
+const mapCanvas = document.querySelector('#map-canvas');
+const apartments = generateApartmentsArray(APARTMENTS_AMOUNT);
 
-// Make apartments array
-const APARTMENTS_AMOUNT = 10;
+const renderOneApartment = (element) => {
+  const cardTemplate = document.querySelector('#card').content.cloneNode(true).querySelector('.popup');
+  // console.log(cardTemplate);
+  cardTemplate.querySelector('.popup__avatar').src = element.author.avatar;
 
-const generateApartmentsArray = (amount) => {
-  const apartments = [];
-  for (let i = 0; i < amount; i++) {
-    // Author
-    const author = {avatar : `img/avatars/user0${getRandomNumber(1, 8, 0)}.png`};
+  cardTemplate.querySelector('.popup__title').textContent = element.offer.title;
+  cardTemplate.querySelector('.popup__text--address').textContent = element.offer.address;
+  cardTemplate.querySelector('.popup__text--price').innerHTML = element.offer.price + ' <span>₽/ночь</span>';
 
-    // Offer
-    // Offer__Variables
-    const locationX = getRandomNumber(35.65, 35.7, 5);
-    const locationY = getRandomNumber(139.7, 139.8, 5);
-    const types = ['palace', 'flat', 'house', 'bungalow'];
-    const checks = ['12:00', '13:00', '14:00'];
-
-    // Offer__Features
-    const features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-
-    // Offer__Photos
-    const photos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
-    const offer = {
-      title : 'Лучшие объявления',
-      address : `${locationX}, ${locationY}`,
-      price : getRandomNumber(0, 30000, 0),
-      type : types[getRandomNumber(0, types.length - 1, 0)],
-      rooms : getRandomNumber(1, 5, 0),
-      guests : getRandomNumber(1, 10, 0),
-      checkin : checks[getRandomNumber(0, checks.length - 1, 0)],
-      checkout : checks[getRandomNumber(0, checks.length - 1, 0)],
-      features : changeArray(shuffle(features)),
-      description : 'Уютное помещение. Хорошее освещение. Тепло зимой',
-      photos : changeArray(shuffle(photos)),
-    };
-
-    // Location
-    const location = {
-      x : locationX,
-      y : locationY,
-    }
-
-    apartments[i] = {author, offer, location};
-
+  switch (element.offer.type) {
+    case 'palace':
+      cardTemplate.querySelector('.popup__type').textContent = 'Дворец';
+      break;
+    case 'flat':
+      cardTemplate.querySelector('.popup__type').textContent = 'Квартира';
+      break;
+    case 'house':
+      cardTemplate.querySelector('.popup__type').textContent = 'Дом';
+      break;
+    case 'bungalow':
+      cardTemplate.querySelector('.popup__type').textContent = 'Бунгало';
+      break;
   }
-  return apartments;
-}
 
-generateApartmentsArray(APARTMENTS_AMOUNT);
+  const flatWords = ['комната', 'комнаты', 'комнат'];
+  const guestWords = ['гостя', 'гостей'];
+  let roomText = (element.offer.rooms === 5) ? flatWords[2] : (element.offer.rooms > 1) ? flatWords[1] : flatWords[0];
+  let guestText = (element.offer.guests === 1) ? guestWords[0] : guestWords[1];
+
+  // switch (element.offer.rooms) {
+  //   case 1:
+  //     roomText = flatWords[0];
+  //     break;
+  //   case element.offer.rooms >= 2 && element.offer.rooms <= 4:
+  //     roomText = flatWords[1];
+  //     break;
+  //   case 5:
+  //     roomText = flatWords[2];
+  //     break;
+  // }
+
+  // if (element.offer.guests === 1) {
+  //   guestText = guestWords[0];
+  // } else {
+  //   guestText = guestWords[1];
+  // }
+
+  cardTemplate.querySelector('.popup__text--capacity').textContent = `${element.offer.rooms} ${roomText} для ${element.offer.guests} ${guestText}`;
+  cardTemplate.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin}, выезд до ${element.offer.checkout}`;
+
+  return cardTemplate;
+};
+
+const oneNodeElement = renderOneApartment(apartments[0]);
+
+mapCanvas.appendChild(oneNodeElement);
