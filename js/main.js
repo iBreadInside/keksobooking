@@ -1,4 +1,5 @@
 import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
+import {makeElement} from './make-element.js';
 
 const mapCanvas = document.querySelector('#map-canvas');
 const apartments = generateApartmentsArray(APARTMENTS_AMOUNT);
@@ -29,8 +30,8 @@ const renderOneApartment = (element) => {
 
   const flatWords = ['комната', 'комнаты', 'комнат'];
   const guestWords = ['гостя', 'гостей'];
-  let roomText = (element.offer.rooms === 5) ? flatWords[2] : (element.offer.rooms > 1) ? flatWords[1] : flatWords[0];
-  let guestText = (element.offer.guests === 1) ? guestWords[0] : guestWords[1];
+  const roomText = (element.offer.rooms === 5) ? flatWords[2] : (element.offer.rooms > 1) ? flatWords[1] : flatWords[0];
+  const guestText = (element.offer.guests === 1) ? guestWords[0] : guestWords[1];
 
   // switch (element.offer.rooms) {
   //   case 1:
@@ -52,6 +53,30 @@ const renderOneApartment = (element) => {
 
   cardTemplate.querySelector('.popup__text--capacity').textContent = `${element.offer.rooms} ${roomText} для ${element.offer.guests} ${guestText}`;
   cardTemplate.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin}, выезд до ${element.offer.checkout}`;
+
+  cardTemplate.querySelector('.popup__features').innerHTML = '';
+  for (let i = 0; i < element.offer.features.length; i++) {
+    const featureItem = makeElement('li', 'popup__feature');
+    featureItem.classList.add(`popup__feature--${element.offer.features[i]}`);
+    cardTemplate.querySelector('.popup__features').appendChild(featureItem);
+  }
+
+  cardTemplate.querySelector('.popup__description').textContent = element.offer.description;
+
+  // const photoTemp = cardTemplate.querySelector('.popup__photos').querySelector('.popup__photo');
+  // console.log(photoTemp);
+  cardTemplate.querySelector('.popup__photos').innerHTML = '';
+  for (let i = 0; i < element.offer.photos.length; i++) {
+    // const photoItem = cardTemplate.querySelector('.popup__photos').appendChild(photoTemp);
+    // photoItem.src = element.offer.photos[i];
+    // console.log(photoItem)
+    const photoItem = makeElement('img', 'popup__photo');
+    photoItem.src = element.offer.photos[i];
+    photoItem.width = '45';
+    photoItem.height = '40';
+    photoItem.alt = 'Фотография жилья';
+    cardTemplate.querySelector('.popup__photos').appendChild(photoItem);
+  }
 
   return cardTemplate;
 };
