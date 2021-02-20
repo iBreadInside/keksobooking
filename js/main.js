@@ -1,2 +1,2 @@
-import {} from './render-one-apartment.js';
-import {} from './ad-form.js';
+import {makeCard} from './render-one-apartment.js';
+import {adForm} from './ad-form.js';

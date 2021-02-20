@@ -1,4 +1,4 @@
-const adForm = document.querySelector('.ad-form');
+export const adForm = document.querySelector('.ad-form');
 
 // Change minimum apartment price according to the type
 const apartmentTypes = adForm.querySelector('#type');
