@@ -1,2 +1,6 @@
-import {makeCard} from './render-one-apartment.js';
-import {adForm} from './ad-form.js';
+import {adFormInnerLinks} from './ad-form.js';
+import {disableAdForm, disableMapFilters} from './forms-disabled.js';
+
+adFormInnerLinks()
+disableAdForm();
+disableMapFilters();

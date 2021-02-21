@@ -71,4 +71,4 @@ const renderOneApartment = (element) => {
 };
 
 const oneNodeElement = renderOneApartment(apartments[0]);
-export const makeCard = mapCanvas.appendChild(oneNodeElement);
+const makeCard = mapCanvas.appendChild(oneNodeElement);
