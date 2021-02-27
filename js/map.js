@@ -1,11 +1,13 @@
 import {toggleFormsState} from './forms-disabled.js';
+import {APARTMENTS_AMOUNT, generateApartmentsArray, apartments} from './generate-apartments-array.js';
+import {renderOneApartment} from './render-one-apartment.js';
 
 export const mapTokyo = L.map('map-canvas').on('load', () => {
   toggleFormsState();
 }).setView({
   lat: 35.6800,
   lng: 139.7600,
-}, 10);
+}, 12);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -15,7 +17,7 @@ L.tileLayer(
 ).addTo(mapTokyo);
 
 
-// Marker
+// Main Marker
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
@@ -46,3 +48,25 @@ const getCoordinates = () => {
   });
 };
 getCoordinates();
+
+// Generate apartments marks
+generateApartmentsArray(APARTMENTS_AMOUNT);
+
+const apartmentPinIcon = L.icon({
+  iconUrl: 'img/pin.svg',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+apartments.forEach(apartment => {
+  const apartmentPinMarker = L.marker(
+    {
+      lat: apartment.location.x,
+      lng: apartment.location.y,
+    },
+    {
+      icon: apartmentPinIcon,
+    },
+  )
+  apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
+});

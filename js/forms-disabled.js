@@ -27,15 +27,3 @@ export const toggleFormsState = () => {
     setDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
   }
 };
-
-// export const disableAdForm = () => {
-//   adForm.classList.add('ad-form--disabled');
-//   setDisabledAttribute(adForm.querySelectorAll('fieldset'));
-// };
-
-// export const disableMapFilters = () => {
-//   const mapFiltersForm = document.querySelector('.map__filters');
-//   mapFiltersForm.classList.add('map__filters--disabled');
-//   setDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
-//   setDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
-// };

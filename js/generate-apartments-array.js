@@ -7,9 +7,8 @@ import {changeArray} from './change-array.js';
 
 // Make apartments array
 export const APARTMENTS_AMOUNT = 10;
-
+export const apartments = [];
 export const generateApartmentsArray = (amount) => {
-  const apartments = [];
   for (let i = 0; i < amount; i++) {
     // Author
     const author = {avatar : `img/avatars/user0${getRandomNumber(1, 8, 0)}.png`};
@@ -48,7 +47,5 @@ export const generateApartmentsArray = (amount) => {
     }
 
     apartments[i] = {author, offer, location};
-
   }
-  return apartments;
 }
