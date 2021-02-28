@@ -1,8 +1,9 @@
+/* global L:readonly */
 import {toggleFormsState} from './forms-disabled.js';
-import {APARTMENTS_AMOUNT, generateApartmentsArray, apartments} from './generate-apartments-array.js';
+import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
 import {renderOneApartment} from './render-one-apartment.js';
 
-export const mapTokyo = L.map('map-canvas').on('load', () => {
+const mapTokyo = L.map('map-canvas').on('load', () => {
   toggleFormsState();
 }).setView({
   lat: 35.6800,
@@ -50,7 +51,6 @@ const getCoordinates = () => {
 getCoordinates();
 
 // Generate apartments marks
-generateApartmentsArray(APARTMENTS_AMOUNT);
 
 const apartmentPinIcon = L.icon({
   iconUrl: 'img/pin.svg',
@@ -58,7 +58,7 @@ const apartmentPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-apartments.forEach(apartment => {
+generateApartmentsArray(APARTMENTS_AMOUNT).forEach(apartment => {
   const apartmentPinMarker = L.marker(
     {
       lat: apartment.location.x,

@@ -1,8 +1,8 @@
-import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
+// import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
 import {makeElement} from './make-element.js';
 
-const mapCanvas = document.querySelector('#map-canvas');
-const apartments = generateApartmentsArray(APARTMENTS_AMOUNT);
+// const mapCanvas = document.querySelector('#map-canvas');
+// const apartments = generateApartmentsArray(APARTMENTS_AMOUNT);
 
 export const renderOneApartment = (element) => {
   const cardTemplate = document.querySelector('#card').content.cloneNode(true).querySelector('.popup');
@@ -69,6 +69,3 @@ export const renderOneApartment = (element) => {
 
   return cardTemplate;
 };
-
-// const oneNodeElement = renderOneApartment(apartments[0]);
-// const makeCard = mapCanvas.appendChild(oneNodeElement);

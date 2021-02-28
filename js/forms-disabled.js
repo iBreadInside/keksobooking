@@ -1,11 +1,11 @@
 const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 
-const setDisabledAttribute = (array) => {
-  array.forEach(element => element.setAttribute('disabled', 'disabled'));
+const setDisabledAttribute = (nodeList) => {
+  nodeList.forEach(element => element.setAttribute('disabled', 'disabled'));
 };
-const removeDisabledAttribute = (array) => {
-  array.forEach(element => element.removeAttribute('disabled'));
+const removeDisabledAttribute = (nodeList) => {
+  nodeList.forEach(element => element.removeAttribute('disabled'));
 };
 
 export const toggleFormsState = () => {
