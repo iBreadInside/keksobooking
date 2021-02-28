@@ -58,7 +58,7 @@ const apartmentPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-generateApartmentsArray(APARTMENTS_AMOUNT).forEach(apartment => {
+export const generatePopups = generateApartmentsArray(APARTMENTS_AMOUNT).forEach(apartment => {
   const apartmentPinMarker = L.marker(
     {
       lat: apartment.location.x,
