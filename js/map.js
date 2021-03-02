@@ -41,14 +41,14 @@ mainPinMarker.addTo(mapTokyo);
 // Get coordinates
 const coordinateField = document.querySelector('#address');
 
-const getCoordinates = () => {
+export const getCoordinates = () => {
   mainPinMarker.on('moveend', (evt) => {
     const rawCoordinates = evt.target.getLatLng();
     const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
     coordinateField.value = fixedCoordinates;
   });
 };
-getCoordinates();
+// getCoordinates();
 
 // Generate apartments marks
 
