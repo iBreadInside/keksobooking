@@ -7,21 +7,19 @@ const roomNumber = adForm.querySelector('#room_number');
 const roomCapacity = adForm.querySelector('#capacity');
 const roomCapacityCollection = roomCapacity.querySelectorAll('option');
 
-// const roomCapacityArray = [...adForm.querySelector('#capacity').children];
-
 const APARTMENT_MIN_PRICES = ['0', '1000', '5000', '10000'];
 
 const removeDisabled = (element) => {
-  element.removeAttribute('disabled');
+  element.disabled = false;
 };
 const setDisabled = (element) => {
-  element.setAttribute('disabled', true);
+  element.disabled = true;
 };
 const removeSelected = (element) => {
-  element.removeAttribute('selected');
+  element.selected = false;
 };
 const setSelected = (element) => {
-  element.setAttribute('selected', true);
+  element.selected = true;
 };
 
 const checkCase = (currentCase, element) => {
@@ -35,6 +33,8 @@ const checkCase = (currentCase, element) => {
 };
 
 export const adFormInnerLinks = () => {
+
+  roomCapacityCollection[3].disabled = true;
 
   // Change minimum apartment price according to the type
   apartmentTypes.addEventListener('change', () => {
