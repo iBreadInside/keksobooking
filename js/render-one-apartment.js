@@ -1,8 +1,4 @@
-// import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
 import {makeElement} from './make-element.js';
-
-// const mapCanvas = document.querySelector('#map-canvas');
-// const apartments = generateApartmentsArray(APARTMENTS_AMOUNT);
 
 export const renderOneApartment = (element) => {
   const cardTemplate = document.querySelector('#card').content.cloneNode(true).querySelector('.popup');

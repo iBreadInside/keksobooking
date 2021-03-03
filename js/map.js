@@ -3,11 +3,15 @@ import {toggleFormsState} from './forms-disabled.js';
 import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
 import {renderOneApartment} from './render-one-apartment.js';
 
+const coordinateField = document.querySelector('#address');
+
+const DEFAULT_CENTER = ['35.68000', '139.76000'];
+
 const mapTokyo = L.map('map-canvas').on('load', () => {
   toggleFormsState();
 }).setView({
-  lat: 35.6800,
-  lng: 139.7600,
+  lat: DEFAULT_CENTER[0],
+  lng: DEFAULT_CENTER[1],
 }, 12);
 
 L.tileLayer(
@@ -27,8 +31,8 @@ const mainPinIcon = L.icon({
 
 const mainPinMarker = L.marker(
   {
-    lat: 35.6800,
-    lng: 139.7600,
+    lat: DEFAULT_CENTER[0],
+    lng: DEFAULT_CENTER[1],
   },
   {
     draggable: true,
@@ -38,20 +42,17 @@ const mainPinMarker = L.marker(
 
 mainPinMarker.addTo(mapTokyo);
 
-// Get coordinates
-const coordinateField = document.querySelector('#address');
-
-const getCoordinates = () => {
+// Set dafault and get main marker's coordinates
+export const getCoordinates = () => {
+  coordinateField.value = DEFAULT_CENTER;
   mainPinMarker.on('moveend', (evt) => {
     const rawCoordinates = evt.target.getLatLng();
     const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
     coordinateField.value = fixedCoordinates;
   });
 };
-getCoordinates();
 
 // Generate apartments marks
-
 const apartmentPinIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [40, 40],
