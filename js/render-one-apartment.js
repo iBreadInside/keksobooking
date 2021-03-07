@@ -1,4 +1,5 @@
 import {makeElement} from './make-element.js';
+import {makeDeclination} from './make-declination.js';
 
 export const renderOneApartment = (element) => {
   const cardTemplate = document.querySelector('#card').content.cloneNode(true).querySelector('.popup');
@@ -23,13 +24,13 @@ export const renderOneApartment = (element) => {
       cardTemplate.querySelector('.popup__type').textContent = 'Бунгало';
       break;
   }
-  // Поправить для большего спектра чисел!!! + ограничения
+
   const FLAT_WORDS = ['комната', 'комнаты', 'комнат'];
   const GUEST_WORDS = ['гостя', 'гостей'];
-  const roomText = (element.offer.rooms === 5) ? FLAT_WORDS[2] : (element.offer.rooms > 1) ? FLAT_WORDS[1] : FLAT_WORDS[0];
+
   const guestText = (element.offer.guests === 1) ? GUEST_WORDS[0] : GUEST_WORDS[1];
 
-  cardTemplate.querySelector('.popup__text--capacity').textContent = `${element.offer.rooms} ${roomText} для ${element.offer.guests} ${guestText}`;
+  cardTemplate.querySelector('.popup__text--capacity').textContent = `${element.offer.rooms} ${makeDeclination(element.offer.rooms, FLAT_WORDS)} для ${element.offer.guests} ${guestText}`;
   cardTemplate.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin}, выезд до ${element.offer.checkout}`;
 
   if (!element.offer.features) {

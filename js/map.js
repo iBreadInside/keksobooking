@@ -1,6 +1,6 @@
 /* global L:readonly */
 import {toggleFormsState} from './forms-disabled.js';
-import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
+// import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
 import {renderOneApartment} from './render-one-apartment.js';
 
 const coordinateField = document.querySelector('#address');
@@ -12,7 +12,7 @@ const mapTokyo = L.map('map-canvas').on('load', () => {
 }).setView({
   lat: DEFAULT_CENTER[0],
   lng: DEFAULT_CENTER[1],
-}, 12);
+}, 10);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -59,15 +59,19 @@ const apartmentPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-export const generatePopups = generateApartmentsArray(APARTMENTS_AMOUNT).forEach(apartment => {
-  const apartmentPinMarker = L.marker(
-    {
-      lat: apartment.location.x,
-      lng: apartment.location.y,
-    },
-    {
-      icon: apartmentPinIcon,
-    },
-  )
-  apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
-});
+fetch('https://22.javascript.pages.academy/keksobooking/data')
+  .then((response) => response.json())
+  .then((jsonApartments) => {
+    jsonApartments.forEach(apartment => {
+      const apartmentPinMarker = L.marker(
+        {
+          lat: apartment.location.lat,
+          lng: apartment.location.lng,
+        },
+        {
+          icon: apartmentPinIcon,
+        },
+      )
+      apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
+    });
+  });
