@@ -1,11 +1,11 @@
 /* global L:readonly */
 import {toggleFormsState} from './forms-disabled.js';
-// import {APARTMENTS_AMOUNT, generateApartmentsArray} from './generate-apartments-array.js';
 import {renderOneApartment} from './render-one-apartment.js';
+import {showGetFail} from './show-alert.js';
 
-const coordinateField = document.querySelector('#address');
+export const coordinateField = document.querySelector('#address');
 
-const DEFAULT_CENTER = ['35.68000', '139.76000'];
+export const DEFAULT_CENTER = ['35.68000', '139.76000'];
 
 const mapTokyo = L.map('map-canvas').on('load', () => {
   toggleFormsState();
@@ -29,7 +29,7 @@ const mainPinIcon = L.icon({
   iconAnchor: [26, 52],
 });
 
-const mainPinMarker = L.marker(
+export const mainPinMarker = L.marker(
   {
     lat: DEFAULT_CENTER[0],
     lng: DEFAULT_CENTER[1],
@@ -74,4 +74,7 @@ fetch('https://22.javascript.pages.academy/keksobooking/data')
       )
       apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
     });
+  })
+  .catch(() => {
+    showGetFail('Не удалось получить список объявлений. Попробуйте обновить страницу');
   });

@@ -1,3 +1,4 @@
+// Функция для подбора склонений
 export const makeDeclination = (num, words) => {
   num = Math.abs(num) % 100;
   const num1 = num % 10;

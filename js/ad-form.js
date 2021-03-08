@@ -1,3 +1,6 @@
+import {showSendMessage} from './show-alert.js';
+import {DEFAULT_CENTER, coordinateField, mainPinMarker} from './map.js';
+
 const adForm = document.querySelector('.ad-form');
 const apartmentTypes = adForm.querySelector('#type');
 const apartmentPrice = adForm.querySelector('#price');
@@ -6,6 +9,7 @@ const timeOut = adForm.querySelector('#timeout');
 const roomNumber = adForm.querySelector('#room_number');
 const roomCapacity = adForm.querySelector('#capacity');
 const roomCapacityCollection = roomCapacity.querySelectorAll('option');
+const clearButton = adForm.querySelector('.ad-form__reset');
 
 const APARTMENT_MIN_PRICES = ['0', '1000', '5000', '10000'];
 
@@ -79,3 +83,44 @@ export const adFormInnerLinks = () => {
   });
 
 };
+
+// Set default state
+const setDefault = () => {
+  adForm.reset();
+  coordinateField.value = DEFAULT_CENTER;
+  mainPinMarker.setLatLng(DEFAULT_CENTER);
+};
+
+// Send form
+export const setAdFormSubmit = () => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const formData = new FormData(evt.target);
+
+    fetch(
+      'https://22.javascript.pages.academy/keksobooking',
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
+      .then((response) => {
+        if (response.ok) {
+          setDefault();
+          showSendMessage('success');
+        } else {
+          showSendMessage('error');
+        }
+      })
+      .catch(() => {
+        showSendMessage('error');
+      })
+  });
+};
+
+// Clear button
+clearButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  setDefault();
+});
