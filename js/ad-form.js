@@ -1,5 +1,6 @@
 import {showSendMessage} from './show-alert.js';
 import {DEFAULT_CENTER, coordinateField, mainPinMarker} from './map.js';
+import {sendForm} from './network.js';
 
 const adForm = document.querySelector('.ad-form');
 const apartmentTypes = adForm.querySelector('#type');
@@ -96,15 +97,7 @@ export const setAdFormSubmit = () => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
-    const formData = new FormData(evt.target);
-
-    fetch(
-      'https://22.javascript.pages.academy/keksobooking',
-      {
-        method: 'POST',
-        body: formData,
-      },
-    )
+    sendForm(evt.target)
       .then((response) => {
         if (response.ok) {
           setDefault();

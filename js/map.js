@@ -1,7 +1,7 @@
 /* global L:readonly */
 import {toggleFormsState} from './forms-disabled.js';
+import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
-import {showGetFail} from './show-alert.js';
 
 export const coordinateField = document.querySelector('#address');
 
@@ -59,22 +59,15 @@ const apartmentPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-fetch('https://22.javascript.pages.academy/keksobooking/data')
-  .then((response) => response.json())
-  .then((jsonApartments) => {
-    jsonApartments.forEach(apartment => {
-      const apartmentPinMarker = L.marker(
-        {
-          lat: apartment.location.lat,
-          lng: apartment.location.lng,
-        },
-        {
-          icon: apartmentPinIcon,
-        },
-      )
-      apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
-    });
-  })
-  .catch(() => {
-    showGetFail('Не удалось получить список объявлений. Попробуйте обновить страницу');
-  });
+getApartments().then((result) => result.forEach(apartment => {
+  const apartmentPinMarker = L.marker(
+    {
+      lat: apartment.location.lat,
+      lng: apartment.location.lng,
+    },
+    {
+      icon: apartmentPinIcon,
+    },
+  )
+  apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
+}));
