@@ -3,6 +3,7 @@ import {toggleFormsState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
 
+
 export const coordinateField = document.querySelector('#address');
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
@@ -59,15 +60,17 @@ const apartmentPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-getApartments().then((result) => result.forEach(apartment => {
-  const apartmentPinMarker = L.marker(
-    {
-      lat: apartment.location.lat,
-      lng: apartment.location.lng,
-    },
-    {
-      icon: apartmentPinIcon,
-    },
-  )
-  apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
-}));
+getApartments((apartments) => {
+  apartments.forEach(apartment => {
+    const apartmentPinMarker = L.marker(
+      {
+        lat: apartment.location.lat,
+        lng: apartment.location.lng,
+      },
+      {
+        icon: apartmentPinIcon,
+      },
+    )
+    apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
+  })
+});

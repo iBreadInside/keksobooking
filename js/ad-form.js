@@ -97,18 +97,16 @@ export const setAdFormSubmit = () => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
-    sendForm(evt.target)
-      .then((response) => {
-        if (response.ok) {
-          setDefault();
-          showSendMessage('success');
-        } else {
-          showSendMessage('error');
-        }
-      })
-      .catch(() => {
-        showSendMessage('error');
-      })
+    sendForm(
+      evt.target,
+      (state) => {
+        setDefault();
+        showSendMessage(state);
+      },
+      (state) => {
+        showSendMessage(state);
+      });
+
   });
 };
 
