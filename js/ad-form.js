@@ -1,3 +1,7 @@
+import {showSendMessage} from './show-alert.js';
+import {DEFAULT_CENTER, coordinateField, mainPinMarker} from './map.js';
+import {sendForm} from './network.js';
+
 const adForm = document.querySelector('.ad-form');
 const apartmentTypes = adForm.querySelector('#type');
 const apartmentPrice = adForm.querySelector('#price');
@@ -6,6 +10,7 @@ const timeOut = adForm.querySelector('#timeout');
 const roomNumber = adForm.querySelector('#room_number');
 const roomCapacity = adForm.querySelector('#capacity');
 const roomCapacityCollection = roomCapacity.querySelectorAll('option');
+const clearButton = adForm.querySelector('.ad-form__reset');
 
 const APARTMENT_MIN_PRICES = ['0', '1000', '5000', '10000'];
 
@@ -33,8 +38,10 @@ const checkCase = (currentCase, element) => {
 };
 
 export const adFormInnerLinks = () => {
-
-  roomCapacityCollection[3].disabled = true;
+  // Default
+  roomCapacityCollection.forEach((element) => {
+    if (element.value === '0') element.disabled = true;
+  });
 
   // Change minimum apartment price according to the type
   apartmentTypes.addEventListener('change', () => {
@@ -52,28 +59,59 @@ export const adFormInnerLinks = () => {
 
   // Bonds for room type and quests
   roomNumber.addEventListener('change', () => {
-    switch (roomNumber.selectedIndex) {
-      case 0:
+    switch (roomNumber.value) {
+      case '1':
         roomCapacityCollection.forEach((element) => {
-          checkCase(element.value == 1, element);
+          checkCase(element.value === '1', element);
         });
         break;
-      case 1:
+      case '2':
         roomCapacityCollection.forEach((element) => {
           checkCase(['1', '2'].includes(element.value), element);
         });
         break;
-      case 2:
+      case '3':
         roomCapacityCollection.forEach((element) => {
           checkCase(['1', '2', '3'].includes(element.value), element);
         });
         break;
       default:
         roomCapacityCollection.forEach((element) => {
-          checkCase(element.value == 0, element);
+          checkCase(element.value === '0', element);
         });
         break;
     }
   });
 
 };
+
+// Set default state
+const setDefault = () => {
+  adForm.reset();
+  coordinateField.value = DEFAULT_CENTER;
+  mainPinMarker.setLatLng(DEFAULT_CENTER);
+};
+
+// Send form
+export const setAdFormSubmit = () => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendForm(
+      evt.target,
+      (state) => {
+        setDefault();
+        showSendMessage(state);
+      },
+      (state) => {
+        showSendMessage(state);
+      });
+
+  });
+};
+
+// Clear button
+clearButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  setDefault();
+});
