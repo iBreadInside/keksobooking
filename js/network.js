@@ -12,12 +12,12 @@ export const getApartments = (onSuccess) => {
 };
 
 // Send form
-export const sendForm = (userForm, onSuccess, onError) => {
+export const sendForm = (body, onSuccess, onError) => {
   return fetch(
     'https://22.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
-      body: new FormData(userForm),
+      body,
     },
   ).then((response) => {
     if (response.ok) {
