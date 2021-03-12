@@ -40,7 +40,9 @@ const checkCase = (currentCase, element) => {
 export const adFormInnerLinks = () => {
   // Default
   roomCapacityCollection.forEach((element) => {
-    if (element.value === '0') element.disabled = true;
+    if (element.value === '0') {
+      element.disabled = true
+    }
   });
 
   // Change minimum apartment price according to the type
@@ -98,7 +100,7 @@ export const setAdFormSubmit = () => {
     evt.preventDefault();
 
     sendForm(
-      evt.target,
+      new FormData(evt.target),
       (state) => {
         setDefault();
         showSendMessage(state);

@@ -26,11 +26,9 @@ export const renderOneApartment = (element) => {
   }
 
   const FLAT_WORDS = ['комната', 'комнаты', 'комнат'];
-  const GUEST_WORDS = ['гостя', 'гостей'];
+  const GUEST_WORDS = ['гостя', 'гостей', 'гостей'];
 
-  const guestText = (element.offer.guests === 1) ? GUEST_WORDS[0] : GUEST_WORDS[1];
-
-  cardTemplate.querySelector('.popup__text--capacity').textContent = `${element.offer.rooms} ${makeDeclination(element.offer.rooms, FLAT_WORDS)} для ${element.offer.guests} ${guestText}`;
+  cardTemplate.querySelector('.popup__text--capacity').textContent = `${element.offer.rooms} ${makeDeclination(element.offer.rooms, FLAT_WORDS)} для ${element.offer.guests} ${makeDeclination(element.offer.guests, GUEST_WORDS)}`;
   cardTemplate.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin}, выезд до ${element.offer.checkout}`;
 
   if (!element.offer.features) {
