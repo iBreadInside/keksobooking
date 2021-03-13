@@ -8,7 +8,7 @@ const removeDisabledAttribute = (nodeList) => {
   nodeList.forEach(element => element.disabled = false);
 };
 
-export const toggleFormsState = () => {
+export const toggleAdFormState = () => {
   if (adForm.classList.contains('ad-form--disabled')) {
     adForm.classList.remove('ad-form--disabled');
     removeDisabledAttribute(adForm.querySelectorAll('fieldset'));
@@ -16,7 +16,9 @@ export const toggleFormsState = () => {
     adForm.classList.add('ad-form--disabled');
     setDisabledAttribute(adForm.querySelectorAll('fieldset'));
   }
+};
 
+export const toggleFilterState = () => {
   if (mapFiltersForm.classList.contains('map__filters--disabled')) {
     mapFiltersForm.classList.remove('map__filters--disabled');
     removeDisabledAttribute(mapFiltersForm.querySelectorAll('select'));

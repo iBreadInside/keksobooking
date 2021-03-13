@@ -1,15 +1,15 @@
 /* global L:readonly */
-import {toggleFormsState} from './forms-disabled.js';
+import {toggleAdFormState, toggleFilterState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
-
+// import {sortApartments} from './sorting.js';
 
 export const coordinateField = document.querySelector('#address');
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
 
 const mapTokyo = L.map('map-canvas').on('load', () => {
-  toggleFormsState();
+  toggleAdFormState();
 }).setView({
   lat: DEFAULT_CENTER[0],
   lng: DEFAULT_CENTER[1],
@@ -60,17 +60,39 @@ const apartmentPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
+// Get distance from main pin
+const getDistance = (pin, apartment) => {
+  const pinLocation = pin.getLatLng();
+  const distance = Math.sqrt(((pinLocation.lat - apartment.location.lat) ** 2) + ((pinLocation.lng - apartment.location.lng) ** 2));
+  return distance;
+};
+
+// Sorting
+const sortApartments = (apartmentA, apartmentB) => {
+  const distanceA = getDistance(mainPinMarker, apartmentA);
+  // console.log(distanceA);
+  const distanceB = getDistance(mainPinMarker, apartmentB);
+  // console.log(distanceB);
+
+  return distanceA - distanceB;
+}
+
 getApartments((apartments) => {
-  apartments.forEach(apartment => {
-    const apartmentPinMarker = L.marker(
-      {
-        lat: apartment.location.lat,
-        lng: apartment.location.lng,
-      },
-      {
-        icon: apartmentPinIcon,
-      },
-    )
-    apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
-  })
+  apartments
+    .slice(0, 10)
+    .sort(sortApartments)
+    .slice(0, 10)
+    .forEach(apartment => {
+      const apartmentPinMarker = L.marker(
+        {
+          lat: apartment.location.lat,
+          lng: apartment.location.lng,
+        },
+        {
+          icon: apartmentPinIcon,
+        },
+      );
+      apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
+    });
+  toggleFilterState();
 });
