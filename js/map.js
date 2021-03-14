@@ -1,4 +1,4 @@
-/* global L:readonly */
+/* global L:readonly _:readonly*/
 import {toggleAdFormState, toggleFilterState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
@@ -13,6 +13,7 @@ const filterGuests = filterForm.querySelector('#housing-guests');
 const filterFeatures = filterForm.querySelector('#housing-features');
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
+const RERENDER_DELAY = 500;
 
 const mapTokyo = L.map('map-canvas').on('load', () => {
   toggleAdFormState();
@@ -116,7 +117,6 @@ const showAp = () => {
 showAp();
 
 // Filter
-
 const mapFilter = (apartments) => {
   // Price checker
 
@@ -152,7 +152,8 @@ const mapFilter = (apartments) => {
 };
 
 export const evtFilter = () => {
-  filterForm.addEventListener('change', () => {
-    showAp();
-  })
+  filterForm.addEventListener('change', _.debounce(
+    () => showAp(),
+    RERENDER_DELAY,
+  ));
 };
