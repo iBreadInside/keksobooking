@@ -50,10 +50,13 @@ export const getCoordinates = () => {
     const rawCoordinates = evt.target.getLatLng();
     const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
     coordinateField.value = fixedCoordinates;
+    showAp();
   });
 };
 
 // Generate apartments marks
+const pinLayer = L.layerGroup();
+
 const apartmentPinIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [40, 40],
@@ -70,29 +73,53 @@ const getDistance = (pin, apartment) => {
 // Sorting
 const sortApartments = (apartmentA, apartmentB) => {
   const distanceA = getDistance(mainPinMarker, apartmentA);
-  // console.log(distanceA);
   const distanceB = getDistance(mainPinMarker, apartmentB);
-  // console.log(distanceB);
 
   return distanceA - distanceB;
 }
 
-getApartments((apartments) => {
-  apartments
-    .slice(0, 10)
-    .sort(sortApartments)
-    .slice(0, 10)
-    .forEach(apartment => {
-      const apartmentPinMarker = L.marker(
-        {
-          lat: apartment.location.lat,
-          lng: apartment.location.lng,
-        },
-        {
-          icon: apartmentPinIcon,
-        },
-      );
-      apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
-    });
-  toggleFilterState();
-});
+const makePin = (el, layer) => {
+  const apartmentPinMarker = L.marker(
+    {
+      lat: el.location.lat,
+      lng: el.location.lng,
+    },
+    {
+      icon: apartmentPinIcon,
+    },
+  );
+  apartmentPinMarker.addTo(layer).bindPopup(renderOneApartment(el));
+}
+
+const showAp = () => {
+  getApartments((apartments) => {
+    const apartmentsOffers = apartments;
+    pinLayer.clearLayers();
+    mapFilter(apartmentsOffers).slice()
+      .sort(sortApartments)
+      .slice(0, 10)
+      .forEach(apartment => {
+        makePin(apartment, pinLayer);
+      });
+    pinLayer.addTo(mapTokyo);
+    toggleFilterState();
+  });
+};
+
+showAp();
+
+// Filter
+const filterForm = document.querySelector('.map__filters');
+
+// Get values from filter
+const filterType = filterForm.querySelector('#housing-type');
+
+const mapFilter = (apartments) => {
+  return apartments.filter(el => (el.offer.type === filterType.value || filterType.value === 'any'));
+};
+
+export const evtFilter = () => {
+  filterForm.addEventListener('change', () => {
+    showAp();
+  })
+};

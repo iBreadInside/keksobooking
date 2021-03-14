@@ -23,9 +23,9 @@ export const toggleFilterState = () => {
     mapFiltersForm.classList.remove('map__filters--disabled');
     removeDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
     removeDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
-  } else {
+  } /* else {
     mapFiltersForm.classList.add('map__filters--disabled');
     setDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
     setDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
-  }
+  } */
 };
