@@ -5,6 +5,8 @@ import {renderOneApartment} from './render-one-apartment.js';
 // import {sortApartments} from './sorting.js';
 
 export const coordinateField = document.querySelector('#address');
+const filterForm = document.querySelector('.map__filters');
+const filterType = filterForm.querySelector('#housing-type');
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
 
@@ -109,10 +111,7 @@ const showAp = () => {
 showAp();
 
 // Filter
-const filterForm = document.querySelector('.map__filters');
-
 // Get values from filter
-const filterType = filterForm.querySelector('#housing-type');
 
 const mapFilter = (apartments) => {
   return apartments.filter(el => (el.offer.type === filterType.value || filterType.value === 'any'));
