@@ -83,7 +83,7 @@ const sortApartments = (apartmentA, apartmentB) => {
   const distanceB = getDistance(mainPinMarker, apartmentB);
 
   return distanceA - distanceB;
-}
+};
 
 const makePin = (el, layer) => {
   const apartmentPinMarker = L.marker(
@@ -96,7 +96,7 @@ const makePin = (el, layer) => {
     },
   );
   apartmentPinMarker.addTo(layer).bindPopup(renderOneApartment(el));
-}
+};
 
 // Getting apartments and draw them on map
 const showAp = () => {
@@ -119,7 +119,6 @@ showAp();
 // Filter
 const mapFilter = (apartments) => {
   // Price checker
-
   const PRICE_LIMITS = [10000, 50000];
 
   const priceCheck = (apartmentArr) => {
@@ -131,7 +130,7 @@ const mapFilter = (apartments) => {
     filterPrice.value === 'any') {
       return true;
     }
-  }
+  };
 
   // Feature checker
   const getChecked = [...filterFeatures.querySelectorAll('input[type="checkbox"]:checked')];
@@ -140,7 +139,7 @@ const mapFilter = (apartments) => {
   });
   const checker = (featuresServerArr, checkedArr) => {
     return checkedArr.every(el => featuresServerArr.includes(el));
-  }
+  };
 
   return apartments.filter(el =>
     (el.offer.type === filterType.value || filterType.value === 'any') && // Type filter
