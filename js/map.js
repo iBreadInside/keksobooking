@@ -1,15 +1,17 @@
 /* global L:readonly */
-import {toggleFormsState} from './forms-disabled.js';
+import {toggleAdFormState, toggleFilterState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
-
+// import {sortApartments} from './sorting.js';
 
 export const coordinateField = document.querySelector('#address');
+const filterForm = document.querySelector('.map__filters');
+const filterType = filterForm.querySelector('#housing-type');
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
 
 const mapTokyo = L.map('map-canvas').on('load', () => {
-  toggleFormsState();
+  toggleAdFormState();
 }).setView({
   lat: DEFAULT_CENTER[0],
   lng: DEFAULT_CENTER[1],
@@ -50,27 +52,73 @@ export const getCoordinates = () => {
     const rawCoordinates = evt.target.getLatLng();
     const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
     coordinateField.value = fixedCoordinates;
+    showAp();
   });
 };
 
 // Generate apartments marks
+const pinLayer = L.layerGroup();
+
 const apartmentPinIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
 
-getApartments((apartments) => {
-  apartments.forEach(apartment => {
-    const apartmentPinMarker = L.marker(
-      {
-        lat: apartment.location.lat,
-        lng: apartment.location.lng,
-      },
-      {
-        icon: apartmentPinIcon,
-      },
-    )
-    apartmentPinMarker.addTo(mapTokyo).bindPopup(renderOneApartment(apartment));
+// Get distance from main pin
+const getDistance = (pin, apartment) => {
+  const pinLocation = pin.getLatLng();
+  const distance = Math.sqrt(((pinLocation.lat - apartment.location.lat) ** 2) + ((pinLocation.lng - apartment.location.lng) ** 2));
+  return distance;
+};
+
+// Sorting
+const sortApartments = (apartmentA, apartmentB) => {
+  const distanceA = getDistance(mainPinMarker, apartmentA);
+  const distanceB = getDistance(mainPinMarker, apartmentB);
+
+  return distanceA - distanceB;
+}
+
+const makePin = (el, layer) => {
+  const apartmentPinMarker = L.marker(
+    {
+      lat: el.location.lat,
+      lng: el.location.lng,
+    },
+    {
+      icon: apartmentPinIcon,
+    },
+  );
+  apartmentPinMarker.addTo(layer).bindPopup(renderOneApartment(el));
+}
+
+const showAp = () => {
+  getApartments((apartments) => {
+    const apartmentsOffers = apartments;
+    pinLayer.clearLayers();
+    mapFilter(apartmentsOffers).slice()
+      .sort(sortApartments)
+      .slice(0, 10)
+      .forEach(apartment => {
+        makePin(apartment, pinLayer);
+      });
+    pinLayer.addTo(mapTokyo);
+    toggleFilterState();
+  });
+};
+
+showAp();
+
+// Filter
+// Get values from filter
+
+const mapFilter = (apartments) => {
+  return apartments.filter(el => (el.offer.type === filterType.value || filterType.value === 'any'));
+};
+
+export const evtFilter = () => {
+  filterForm.addEventListener('change', () => {
+    showAp();
   })
-});
+};
