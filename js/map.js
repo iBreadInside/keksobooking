@@ -157,8 +157,8 @@ const evtFilter = (arr) => {
 
 export const mapFunctions = () => {
   getApartments((apartments) => {
-    drawMarkers(apartments);
     activateFilterState();
+    drawMarkers(apartments);
     evtFilter(apartments);
     moveMarker(apartments);
   });
