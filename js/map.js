@@ -145,6 +145,7 @@ const mapFilter = (apartments) => {
   );
 };
 
+
 const evtFilter = (arr) => {
   filterForm.addEventListener('change', _.debounce(
     () => {

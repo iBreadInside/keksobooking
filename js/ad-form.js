@@ -108,7 +108,6 @@ export const setAdFormSubmit = () => {
       (state) => {
         showSendMessage(state);
       });
-
   });
 };
 
