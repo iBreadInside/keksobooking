@@ -1,8 +1,7 @@
 /* global L:readonly _:readonly*/
-import {toggleAdFormState, toggleFilterState} from './forms-disabled.js';
+import {toggleAdFormState, activateFilterState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
-// import {sortApartments} from './sorting.js';
 
 export const coordinateField = document.querySelector('#address');
 const filterForm = document.querySelector('.map__filters');
@@ -13,6 +12,7 @@ const filterGuests = filterForm.querySelector('#housing-guests');
 const filterFeatures = filterForm.querySelector('#housing-features');
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
+const PRICE_LIMITS = [10000, 50000];
 const RERENDER_DELAY = 500;
 
 const mapTokyo = L.map('map-canvas').on('load', () => {
@@ -85,6 +85,7 @@ const sortApartments = (apartmentA, apartmentB) => {
   return distanceA - distanceB;
 };
 
+// Make Pin
 const makePin = (el, layer) => {
   const apartmentPinMarker = L.marker(
     {
@@ -99,18 +100,19 @@ const makePin = (el, layer) => {
 };
 
 // Getting apartments and draw them on map
+
 const showAp = () => {
   getApartments((apartments) => {
     const apartmentsOffers = apartments;
     pinLayer.clearLayers();
-    mapFilter(apartmentsOffers).slice()
+    mapFilter(apartmentsOffers)
       .sort(sortApartments)
-      .slice(0, 3)
+      .slice(0, 10)
       .forEach(apartment => {
         makePin(apartment, pinLayer);
       });
     pinLayer.addTo(mapTokyo);
-    toggleFilterState();
+    activateFilterState();
   });
 };
 
@@ -119,8 +121,6 @@ showAp();
 // Filter
 const mapFilter = (apartments) => {
   // Price checker
-  const PRICE_LIMITS = [10000, 50000];
-
   const priceCheck = (apartmentArr) => {
     const apPrice = apartmentArr.offer.price;
 

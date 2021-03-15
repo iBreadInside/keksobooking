@@ -1,9 +1,9 @@
 import {adFormInnerLinks, setAdFormSubmit} from './ad-form.js';
-import {toggleAdFormState, toggleFilterState} from './forms-disabled.js';
+import {toggleAdFormState, disableFilterState} from './forms-disabled.js';
 import {getCoordinates, evtFilter} from './map.js';
 
 toggleAdFormState();
-toggleFilterState();
+disableFilterState();
 adFormInnerLinks();
 getCoordinates();
 setAdFormSubmit();
