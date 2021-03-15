@@ -49,15 +49,20 @@ export const mainPinMarker = L.marker(
 );
 
 mainPinMarker.addTo(mapTokyo);
+coordinateField.value = DEFAULT_CENTER;
 
 // Set dafault and get main marker's coordinates
-export const getCoordinates = () => {
-  coordinateField.value = DEFAULT_CENTER;
+const getCoordinates = (marker) => {
+  const rawCoordinates = marker.getLatLng();
+  const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
+  return fixedCoordinates;
+};
+
+const moveMarker = (arr) => {
   mainPinMarker.on('moveend', (evt) => {
-    const rawCoordinates = evt.target.getLatLng();
-    const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
-    coordinateField.value = fixedCoordinates;
-    showAp();
+    pinLayer.clearLayers();
+    coordinateField.value = getCoordinates(evt.target);
+    drawMarkers(mapFilter(arr));
   });
 };
 
@@ -100,23 +105,13 @@ const makePin = (el, layer) => {
 };
 
 // Getting apartments and draw them on map
-
-const showAp = () => {
-  getApartments((apartments) => {
-    const apartmentsOffers = apartments;
-    pinLayer.clearLayers();
-    mapFilter(apartmentsOffers)
-      .sort(sortApartments)
-      .slice(0, 10)
-      .forEach(apartment => {
-        makePin(apartment, pinLayer);
-      });
-    pinLayer.addTo(mapTokyo);
-    activateFilterState();
+const drawMarkers = (apArr) => {
+  pinLayer.clearLayers();
+  apArr.slice().sort(sortApartments).slice(0, 10).forEach(apartment => {
+    makePin(apartment, pinLayer);
   });
+  pinLayer.addTo(mapTokyo);
 };
-
-showAp();
 
 // Filter
 const mapFilter = (apartments) => {
@@ -150,9 +145,21 @@ const mapFilter = (apartments) => {
   );
 };
 
-export const evtFilter = () => {
+const evtFilter = (arr) => {
   filterForm.addEventListener('change', _.debounce(
-    () => showAp(),
+    () => {
+      pinLayer.clearLayers();
+      drawMarkers(mapFilter(arr));
+    },
     RERENDER_DELAY,
   ));
+};
+
+export const mapFunctions = () => {
+  getApartments((apartments) => {
+    drawMarkers(apartments);
+    activateFilterState();
+    evtFilter(apartments);
+    moveMarker(apartments);
+  });
 };
