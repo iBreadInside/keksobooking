@@ -95,7 +95,7 @@ const setDefault = () => {
 };
 
 // Send form
-export const setAdFormSubmit = () => {
+export const onAdFormSubmit = () => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 

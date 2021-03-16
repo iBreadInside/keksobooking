@@ -124,11 +124,9 @@ const typeCheck = (apartment) => {
 
 // Price check
 const priceCheck = (apartment) => {
-  const apartmentPrice = apartment.offer.price;
-
-  return ((filterPrice.value === 'middle' && PRICE_LIMITS[0] <= apartmentPrice && apartmentPrice <= PRICE_LIMITS[1]) ||
-  (filterPrice.value === 'low' && apartmentPrice < PRICE_LIMITS[0]) ||
-  (filterPrice.value === 'high' && apartmentPrice > PRICE_LIMITS[1]) ||
+  return ((filterPrice.value === 'middle' && PRICE_LIMITS[0] <= apartment.offer.price && apartment.offer.price <= PRICE_LIMITS[1]) ||
+  (filterPrice.value === 'low' && apartment.offer.price < PRICE_LIMITS[0]) ||
+  (filterPrice.value === 'high' && apartment.offer.price > PRICE_LIMITS[1]) ||
   filterPrice.value === 'any');
 };
 
@@ -164,7 +162,7 @@ const mapFilter = (apartments) => {
   );
 };
 
-const evtFilter = (apartments) => {
+const onFilterFormChange = (apartments) => {
   filterForm.addEventListener('change', _.debounce(
     () => {
       pinLayer.clearLayers();
@@ -178,7 +176,7 @@ export const mapFunctions = () => {
   getApartments((apartments) => {
     activateFilterState();
     drawMarkers(apartments);
-    evtFilter(apartments);
+    onFilterFormChange(apartments);
     moveMarker(apartments);
   });
 };
