@@ -10,6 +10,8 @@ const filterPrice = filterForm.querySelector('#housing-price');
 const filterRooms = filterForm.querySelector('#housing-rooms');
 const filterGuests = filterForm.querySelector('#housing-guests');
 const filterFeatures = filterForm.querySelector('#housing-features');
+const featuresCheckboxes = [...filterFeatures.querySelectorAll('.map__checkbox')];
+
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
 const PRICE_LIMITS = [10000, 50000];
@@ -58,11 +60,11 @@ const getCoordinates = (marker) => {
   return fixedCoordinates;
 };
 
-const moveMarker = (arr) => {
+const moveMarker = (apartments) => {
   mainPinMarker.on('moveend', (evt) => {
     pinLayer.clearLayers();
     coordinateField.value = getCoordinates(evt.target);
-    drawMarkers(mapFilter(arr));
+    drawMarkers(mapFilter(apartments));
   });
 };
 
@@ -105,52 +107,68 @@ const makePin = (el, layer) => {
 };
 
 // Getting apartments and draw them on map
-const drawMarkers = (apArr) => {
+const drawMarkers = (apartments) => {
   pinLayer.clearLayers();
-  apArr.slice().sort(sortApartments).slice(0, 10).forEach(apartment => {
+  apartments.slice().sort(sortApartments).slice(0, 10).forEach(apartment => {
     makePin(apartment, pinLayer);
   });
   pinLayer.addTo(mapTokyo);
 };
 
 // Filter
+
+//Type check
+const typeCheck = (apartment) => {
+  return apartment.offer.type === filterType.value || filterType.value === 'any';
+};
+
+// Price check
+const priceCheck = (apartment) => {
+  const apartmentPrice = apartment.offer.price;
+
+  return ((filterPrice.value === 'middle' && PRICE_LIMITS[0] <= apartmentPrice && apartmentPrice <= PRICE_LIMITS[1]) ||
+  (filterPrice.value === 'low' && apartmentPrice < PRICE_LIMITS[0]) ||
+  (filterPrice.value === 'high' && apartmentPrice > PRICE_LIMITS[1]) ||
+  filterPrice.value === 'any');
+};
+
+// Room number filter
+const roomsCheck = (apartment) => {
+  return apartment.offer.rooms === Number(filterRooms.value) || filterRooms.value === 'any';
+};
+
+// Guest number filter
+const guestsCheck = (apartment) => {
+  return apartment.offer.guests === Number(filterGuests.value) || filterGuests.value === 'any';
+};
+
+// Features filter
+const compareFeatures = (apartmentFeatures, filterFeatures) => {
+  return filterFeatures.every(el => apartmentFeatures.includes(el));
+};
+
+const featureCheck = (apartment) => {
+  const checkedFeatures = featuresCheckboxes.filter(feature => feature.checked);
+  const getCheckedValues = checkedFeatures.map(feature => feature.value);
+
+  return compareFeatures(apartment.offer.features, getCheckedValues) || getCheckedValues.length === 0;
+};
+
 const mapFilter = (apartments) => {
-  // Price checker
-  const priceCheck = (apartmentArr) => {
-    const apPrice = apartmentArr.offer.price;
-
-    if ((filterPrice.value === 'middle' && PRICE_LIMITS[0] <= apPrice && apPrice <= PRICE_LIMITS[1]) ||
-    (filterPrice.value === 'low' && apPrice < PRICE_LIMITS[0]) ||
-    (filterPrice.value === 'high' && apPrice > PRICE_LIMITS[1]) ||
-    filterPrice.value === 'any') {
-      return true;
-    }
-  };
-
-  // Feature checker
-  const getChecked = [...filterFeatures.querySelectorAll('input[type="checkbox"]:checked')];
-  const getCheckedValues = getChecked.map((el) => {
-    return el.value;
-  });
-  const checker = (featuresServerArr, checkedArr) => {
-    return checkedArr.every(el => featuresServerArr.includes(el));
-  };
-
   return apartments.filter(el =>
-    (el.offer.type === filterType.value || filterType.value === 'any') && // Type filter
-    (priceCheck(el)) && // Price filter
-    (el.offer.rooms === Number(filterRooms.value) || filterRooms.value === 'any') &&  // Room number filter
-    (el.offer.guests === Number(filterGuests.value) || filterGuests.value === 'any') && // Guest number filter
-    (checker(el.offer.features, getCheckedValues) || getCheckedValues.length === 0), // Features filter
+    typeCheck(el) && // Type filter
+    priceCheck(el) && // Price filter
+    roomsCheck(el) &&  // Room number filter
+    guestsCheck(el) && // Guest number filter
+    featureCheck(el), // Features filter
   );
 };
 
-
-const evtFilter = (arr) => {
+const evtFilter = (apartments) => {
   filterForm.addEventListener('change', _.debounce(
     () => {
       pinLayer.clearLayers();
-      drawMarkers(mapFilter(arr));
+      drawMarkers(mapFilter(apartments));
     },
     RERENDER_DELAY,
   ));

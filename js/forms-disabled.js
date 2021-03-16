@@ -19,11 +19,9 @@ export const toggleAdFormState = () => {
 };
 
 export const activateFilterState = () => {
-  if (mapFiltersForm.classList.contains('map__filters--disabled')) {
-    mapFiltersForm.classList.remove('map__filters--disabled');
-    removeDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
-    removeDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
-  }
+  mapFiltersForm.classList.remove('map__filters--disabled');
+  removeDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
+  removeDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
 };
 
 export const disableFilterState = () => {
