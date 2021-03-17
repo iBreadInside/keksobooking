@@ -18,14 +18,16 @@ export const toggleAdFormState = () => {
   }
 };
 
-export const toggleFilterState = () => {
+export const activateFilterState = () => {
   if (mapFiltersForm.classList.contains('map__filters--disabled')) {
     mapFiltersForm.classList.remove('map__filters--disabled');
     removeDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
     removeDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
-  } /* else {
-    mapFiltersForm.classList.add('map__filters--disabled');
-    setDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
-    setDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
-  } */
+  }
+};
+
+export const disableFilterState = () => {
+  mapFiltersForm.classList.add('map__filters--disabled');
+  setDisabledAttribute(mapFiltersForm.querySelectorAll('select'));
+  setDisabledAttribute(mapFiltersForm.querySelectorAll('fieldset'));
 };

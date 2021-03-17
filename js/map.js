@@ -1,14 +1,21 @@
-/* global L:readonly */
-import {toggleAdFormState, toggleFilterState} from './forms-disabled.js';
+/* global L:readonly _:readonly*/
+import {toggleAdFormState, activateFilterState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
-// import {sortApartments} from './sorting.js';
 
 export const coordinateField = document.querySelector('#address');
 const filterForm = document.querySelector('.map__filters');
 const filterType = filterForm.querySelector('#housing-type');
+const filterPrice = filterForm.querySelector('#housing-price');
+const filterRooms = filterForm.querySelector('#housing-rooms');
+const filterGuests = filterForm.querySelector('#housing-guests');
+const filterFeatures = filterForm.querySelector('#housing-features');
+const featuresCheckboxes = [...filterFeatures.querySelectorAll('.map__checkbox')];
+
 
 export const DEFAULT_CENTER = ['35.68000', '139.76000'];
+const PRICE_LIMITS = [10000, 50000];
+const RERENDER_DELAY = 500;
 
 const mapTokyo = L.map('map-canvas').on('load', () => {
   toggleAdFormState();
@@ -44,15 +51,20 @@ export const mainPinMarker = L.marker(
 );
 
 mainPinMarker.addTo(mapTokyo);
+coordinateField.value = DEFAULT_CENTER;
 
 // Set dafault and get main marker's coordinates
-export const getCoordinates = () => {
-  coordinateField.value = DEFAULT_CENTER;
+const getCoordinates = (marker) => {
+  const rawCoordinates = marker.getLatLng();
+  const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
+  return fixedCoordinates;
+};
+
+const moveMarker = (apartments) => {
   mainPinMarker.on('moveend', (evt) => {
-    const rawCoordinates = evt.target.getLatLng();
-    const fixedCoordinates = [rawCoordinates.lat.toFixed(5), rawCoordinates.lng.toFixed(5)];
-    coordinateField.value = fixedCoordinates;
-    showAp();
+    pinLayer.clearLayers();
+    coordinateField.value = getCoordinates(evt.target);
+    drawMarkers(mapFilter(apartments));
   });
 };
 
@@ -78,8 +90,9 @@ const sortApartments = (apartmentA, apartmentB) => {
   const distanceB = getDistance(mainPinMarker, apartmentB);
 
   return distanceA - distanceB;
-}
+};
 
+// Make Pin
 const makePin = (el, layer) => {
   const apartmentPinMarker = L.marker(
     {
@@ -91,34 +104,79 @@ const makePin = (el, layer) => {
     },
   );
   apartmentPinMarker.addTo(layer).bindPopup(renderOneApartment(el));
-}
-
-const showAp = () => {
-  getApartments((apartments) => {
-    const apartmentsOffers = apartments;
-    pinLayer.clearLayers();
-    mapFilter(apartmentsOffers).slice()
-      .sort(sortApartments)
-      .slice(0, 10)
-      .forEach(apartment => {
-        makePin(apartment, pinLayer);
-      });
-    pinLayer.addTo(mapTokyo);
-    toggleFilterState();
-  });
 };
 
-showAp();
+// Getting apartments and draw them on map
+const drawMarkers = (apartments) => {
+  pinLayer.clearLayers();
+  apartments.slice().sort(sortApartments).slice(0, 10).forEach(apartment => {
+    makePin(apartment, pinLayer);
+  });
+  pinLayer.addTo(mapTokyo);
+};
 
 // Filter
-// Get values from filter
 
-const mapFilter = (apartments) => {
-  return apartments.filter(el => (el.offer.type === filterType.value || filterType.value === 'any'));
+//Type check
+const typeCheck = (apartment) => {
+  return apartment.offer.type === filterType.value || filterType.value === 'any';
 };
 
-export const evtFilter = () => {
-  filterForm.addEventListener('change', () => {
-    showAp();
-  })
+// Price check
+const priceCheck = (apartment) => {
+  return ((filterPrice.value === 'middle' && PRICE_LIMITS[0] <= apartment.offer.price && apartment.offer.price <= PRICE_LIMITS[1]) ||
+  (filterPrice.value === 'low' && apartment.offer.price < PRICE_LIMITS[0]) ||
+  (filterPrice.value === 'high' && apartment.offer.price > PRICE_LIMITS[1]) ||
+  filterPrice.value === 'any');
+};
+
+// Room number filter
+const roomsCheck = (apartment) => {
+  return apartment.offer.rooms === Number(filterRooms.value) || filterRooms.value === 'any';
+};
+
+// Guest number filter
+const guestsCheck = (apartment) => {
+  return apartment.offer.guests === Number(filterGuests.value) || filterGuests.value === 'any';
+};
+
+// Features filter
+const compareFeatures = (apartmentFeatures, filterFeatures) => {
+  return filterFeatures.every(el => apartmentFeatures.includes(el));
+};
+
+const featureCheck = (apartment) => {
+  const checkedFeatures = featuresCheckboxes.filter(feature => feature.checked);
+  const getCheckedValues = checkedFeatures.map(feature => feature.value);
+
+  return compareFeatures(apartment.offer.features, getCheckedValues) || getCheckedValues.length === 0;
+};
+
+const mapFilter = (apartments) => {
+  return apartments.filter(el =>
+    typeCheck(el) && // Type filter
+    priceCheck(el) && // Price filter
+    roomsCheck(el) &&  // Room number filter
+    guestsCheck(el) && // Guest number filter
+    featureCheck(el), // Features filter
+  );
+};
+
+const onFilterFormChange = (apartments) => {
+  filterForm.addEventListener('change', _.debounce(
+    () => {
+      pinLayer.clearLayers();
+      drawMarkers(mapFilter(apartments));
+    },
+    RERENDER_DELAY,
+  ));
+};
+
+export const mapFunctions = () => {
+  getApartments((apartments) => {
+    activateFilterState();
+    drawMarkers(apartments);
+    onFilterFormChange(apartments);
+    moveMarker(apartments);
+  });
 };
