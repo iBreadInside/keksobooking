@@ -5,7 +5,6 @@ export const renderOneApartment = (element) => {
   const cardTemplate = document.querySelector('#card').content.cloneNode(true).querySelector('.popup');
 
   cardTemplate.querySelector('.popup__avatar').src = element.author.avatar;
-
   cardTemplate.querySelector('.popup__title').textContent = element.offer.title;
   cardTemplate.querySelector('.popup__text--address').textContent = element.offer.address;
   cardTemplate.querySelector('.popup__text--price').innerHTML = element.offer.price + ' <span>₽/ночь</span>';

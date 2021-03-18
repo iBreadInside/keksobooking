@@ -21,6 +21,8 @@ export const showGetFail = (message) => {
 
 export const showSendMessage = (state) => {
   const sendMessage = document.querySelector(`#${state}`).content.cloneNode(true).querySelector(`.${state}`);
+  const tryAgainButton = sendMessage.querySelector('.error__button');
+
   document.body.append(sendMessage);
   document.addEventListener('keydown', (evt) => {
     if (evt.key === '27' || evt.key === 'Escape') {
@@ -28,6 +30,11 @@ export const showSendMessage = (state) => {
     }
     document.removeEventListener('keydown', evt);
   });
+
+  tryAgainButton.addEventListener('click', () => {
+    sendMessage.remove();
+  });
+
   sendMessage.addEventListener('click', () => {
     sendMessage.remove();
   });

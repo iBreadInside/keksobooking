@@ -2,6 +2,8 @@ import {showSendMessage} from './show-alert.js';
 import {DEFAULT_CENTER, coordinateField, mainPinMarker} from './map.js';
 import {sendForm} from './network.js';
 
+const APARTMENT_MIN_PRICES = ['0', '1000', '5000', '10000'];
+
 const adForm = document.querySelector('.ad-form');
 const apartmentTypes = adForm.querySelector('#type');
 const apartmentPrice = adForm.querySelector('#price');
@@ -11,8 +13,6 @@ const roomNumber = adForm.querySelector('#room_number');
 const roomCapacity = adForm.querySelector('#capacity');
 const roomCapacityCollection = roomCapacity.querySelectorAll('option');
 const clearButton = adForm.querySelector('.ad-form__reset');
-
-const APARTMENT_MIN_PRICES = ['0', '1000', '5000', '10000'];
 
 const removeDisabled = (element) => {
   element.disabled = false;
@@ -95,21 +95,19 @@ const setDefault = () => {
 };
 
 // Send form
-export const onAdFormSubmit = () => {
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
+adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
 
-    sendForm(
-      new FormData(evt.target),
-      (state) => {
-        setDefault();
-        showSendMessage(state);
-      },
-      (state) => {
-        showSendMessage(state);
-      });
-  });
-};
+  sendForm(
+    new FormData(evt.target),
+    (state) => {
+      setDefault();
+      showSendMessage(state);
+    },
+    (state) => {
+      showSendMessage(state);
+    });
+});
 
 // Clear button
 clearButton.addEventListener('click', (evt) => {

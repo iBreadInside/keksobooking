@@ -3,6 +3,10 @@ import {toggleAdFormState, activateFilterState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
 
+export const DEFAULT_CENTER = ['35.68000', '139.76000'];
+const PRICE_LIMITS = [10000, 50000];
+const RERENDER_DELAY = 500;
+
 export const coordinateField = document.querySelector('#address');
 const filterForm = document.querySelector('.map__filters');
 const filterType = filterForm.querySelector('#housing-type');
@@ -13,9 +17,6 @@ const filterFeatures = filterForm.querySelector('#housing-features');
 const featuresCheckboxes = [...filterFeatures.querySelectorAll('.map__checkbox')];
 
 
-export const DEFAULT_CENTER = ['35.68000', '139.76000'];
-const PRICE_LIMITS = [10000, 50000];
-const RERENDER_DELAY = 500;
 
 const mapTokyo = L.map('map-canvas').on('load', () => {
   toggleAdFormState();
@@ -162,7 +163,7 @@ const mapFilter = (apartments) => {
   );
 };
 
-const onFilterFormChange = (apartments) => {
+const filterFormChange = (apartments) => {
   filterForm.addEventListener('change', _.debounce(
     () => {
       pinLayer.clearLayers();
@@ -176,7 +177,7 @@ export const mapFunctions = () => {
   getApartments((apartments) => {
     activateFilterState();
     drawMarkers(apartments);
-    onFilterFormChange(apartments);
+    filterFormChange(apartments);
     moveMarker(apartments);
   });
 };
