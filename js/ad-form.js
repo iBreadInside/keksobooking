@@ -3,16 +3,21 @@ import {DEFAULT_CENTER, coordinateField, mainPinMarker} from './map.js';
 import {sendForm} from './network.js';
 
 const APARTMENT_MIN_PRICES = ['0', '1000', '5000', '10000'];
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
 const adForm = document.querySelector('.ad-form');
+const avatarInput = adForm.querySelector('#avatar');
+const avatarPreview = adForm.querySelector('.ad-form-header__preview').querySelector('img');
 const apartmentTypes = adForm.querySelector('#type');
 const apartmentPrice = adForm.querySelector('#price');
 const timeIn = adForm.querySelector('#timein');
 const timeOut = adForm.querySelector('#timeout');
 const roomNumber = adForm.querySelector('#room_number');
 const roomCapacity = adForm.querySelector('#capacity');
-const roomCapacityCollection = roomCapacity.querySelectorAll('option');
+const roomCapacityOptions = roomCapacity.querySelectorAll('option');
 const clearButton = adForm.querySelector('.ad-form__reset');
+const apartmentPhotoInput = adForm.querySelector('#images');
+const apartmentPreview = adForm.querySelector('.ad-form__photo');
 
 const removeDisabled = (element) => {
   element.disabled = false;
@@ -39,7 +44,7 @@ const checkCase = (currentCase, element) => {
 
 export const adFormInnerLinks = () => {
   // Default
-  roomCapacityCollection.forEach((element) => {
+  roomCapacityOptions.forEach((element) => {
     if (element.value === '0') {
       element.disabled = true
     }
@@ -63,22 +68,22 @@ export const adFormInnerLinks = () => {
   roomNumber.addEventListener('change', () => {
     switch (roomNumber.value) {
       case '1':
-        roomCapacityCollection.forEach((element) => {
+        roomCapacityOptions.forEach((element) => {
           checkCase(element.value === '1', element);
         });
         break;
       case '2':
-        roomCapacityCollection.forEach((element) => {
+        roomCapacityOptions.forEach((element) => {
           checkCase(['1', '2'].includes(element.value), element);
         });
         break;
       case '3':
-        roomCapacityCollection.forEach((element) => {
+        roomCapacityOptions.forEach((element) => {
           checkCase(['1', '2', '3'].includes(element.value), element);
         });
         break;
       default:
-        roomCapacityCollection.forEach((element) => {
+        roomCapacityOptions.forEach((element) => {
           checkCase(element.value === '0', element);
         });
         break;
@@ -113,4 +118,47 @@ adForm.addEventListener('submit', (evt) => {
 clearButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   setDefault();
+});
+
+// Photos
+
+// Avatar
+avatarInput.addEventListener('change', () => {
+  const avatarFile = avatarInput.files[0];
+  const fileName = avatarFile.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => {
+    return fileName.endsWith(it);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      avatarPreview.src = reader.result;
+    });
+
+    reader.readAsDataURL(avatarFile);
+  }
+});
+
+// Apartment photo
+apartmentPhotoInput.addEventListener('change', () => {
+  const photoFile = apartmentPhotoInput.files[0];
+  const fileName = photoFile.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => {
+    return fileName.endsWith(it);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      apartmentPreview.style.backgroundSize = 'cover';
+      apartmentPreview.style.backgroundImage = `url('${reader.result}')`;
+    });
+
+    reader.readAsDataURL(photoFile);
+  }
 });
