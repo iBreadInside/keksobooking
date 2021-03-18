@@ -139,6 +139,7 @@ avatarInput.addEventListener('change', () => {
     });
 
     reader.readAsDataURL(avatarFile);
+    reader.removeEventListener();
   }
 });
 
@@ -155,10 +156,13 @@ apartmentPhotoInput.addEventListener('change', () => {
     const reader = new FileReader();
 
     reader.addEventListener('load', () => {
-      apartmentPreview.style.backgroundSize = 'cover';
+      apartmentPreview.style.backgroundSize = 'contain';
+      apartmentPreview.style.backgroundPosition = 'center';
+      apartmentPreview.style.backgroundRepeat = 'no-repeat';
       apartmentPreview.style.backgroundImage = `url('${reader.result}')`;
     });
 
     reader.readAsDataURL(photoFile);
+    reader.removeEventListener();
   }
 });
