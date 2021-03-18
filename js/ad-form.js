@@ -139,7 +139,6 @@ avatarInput.addEventListener('change', () => {
     });
 
     reader.readAsDataURL(avatarFile);
-    reader.removeEventListener();
   }
 });
 
@@ -163,6 +162,5 @@ apartmentPhotoInput.addEventListener('change', () => {
     });
 
     reader.readAsDataURL(photoFile);
-    reader.removeEventListener();
   }
 });
