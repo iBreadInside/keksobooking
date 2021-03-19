@@ -31,9 +31,11 @@ export const showSendMessage = (state) => {
     document.removeEventListener('keydown', evt);
   });
 
-  tryAgainButton.addEventListener('click', () => {
-    sendMessage.remove();
-  });
+  if (tryAgainButton) {
+    tryAgainButton.addEventListener('click', () => {
+      sendMessage.remove();
+    });
+  }
 
   sendMessage.addEventListener('click', () => {
     sendMessage.remove();
