@@ -56,7 +56,6 @@ export const adFormInnerLinks = () => {
   });
 
   // Change minimum apartment price according to the type
-
   apartmentType.addEventListener('change', () => {
     setApartmentMinPrice(APARTMENT_MIN_PRICES);
   });
