@@ -23,13 +23,14 @@ export const showSendMessage = (state) => {
   const sendMessage = document.querySelector(`#${state}`).content.cloneNode(true).querySelector(`.${state}`);
   const tryAgainButton = sendMessage.querySelector('.error__button');
 
-  document.body.append(sendMessage);
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === '27' || evt.key === 'Escape') {
+  const onDocumentKeyDown = (evt) => {
+    if (evt.key === 'Escape') {
       sendMessage.remove();
+      document.removeEventListener('keydown', onDocumentKeyDown);
     }
-    document.removeEventListener('keydown', evt);
-  });
+  };
+
+  document.addEventListener('keydown', onDocumentKeyDown);
 
   if (tryAgainButton) {
     tryAgainButton.addEventListener('click', () => {
@@ -40,4 +41,6 @@ export const showSendMessage = (state) => {
   sendMessage.addEventListener('click', () => {
     sendMessage.remove();
   });
+
+  document.body.append(sendMessage);
 };
