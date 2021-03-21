@@ -3,25 +3,24 @@ import {toggleAdFormState, activateFilterState} from './forms-disabled.js';
 import {getApartments} from './network.js';
 import {renderOneApartment} from './render-one-apartment.js';
 
+export const DEFAULT_CENTER_COORDINATES = ['35.68000', '139.76000'];
+const PRICE_LIMITS = [10000, 50000];
+const RERENDER_DELAY = 500;
+
 export const coordinateField = document.querySelector('#address');
 const filterForm = document.querySelector('.map__filters');
 const filterType = filterForm.querySelector('#housing-type');
 const filterPrice = filterForm.querySelector('#housing-price');
-const filterRooms = filterForm.querySelector('#housing-rooms');
-const filterGuests = filterForm.querySelector('#housing-guests');
-const filterFeatures = filterForm.querySelector('#housing-features');
-const featuresCheckboxes = [...filterFeatures.querySelectorAll('.map__checkbox')];
+const filterRoom = filterForm.querySelector('#housing-rooms');
+const filterGuest = filterForm.querySelector('#housing-guests');
+const filterFeature = filterForm.querySelector('#housing-features');
+const featuresCheckboxes = [...filterFeature.querySelectorAll('.map__checkbox')];
 
-
-export const DEFAULT_CENTER = ['35.68000', '139.76000'];
-const PRICE_LIMITS = [10000, 50000];
-const RERENDER_DELAY = 500;
-
-const mapTokyo = L.map('map-canvas').on('load', () => {
+const mapCity = L.map('map-canvas').on('load', () => {
   toggleAdFormState();
 }).setView({
-  lat: DEFAULT_CENTER[0],
-  lng: DEFAULT_CENTER[1],
+  lat: DEFAULT_CENTER_COORDINATES[0],
+  lng: DEFAULT_CENTER_COORDINATES[1],
 }, 10);
 
 L.tileLayer(
@@ -29,7 +28,7 @@ L.tileLayer(
   {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
-).addTo(mapTokyo);
+).addTo(mapCity);
 
 
 // Main Marker
@@ -41,8 +40,8 @@ const mainPinIcon = L.icon({
 
 export const mainPinMarker = L.marker(
   {
-    lat: DEFAULT_CENTER[0],
-    lng: DEFAULT_CENTER[1],
+    lat: DEFAULT_CENTER_COORDINATES[0],
+    lng: DEFAULT_CENTER_COORDINATES[1],
   },
   {
     draggable: true,
@@ -50,8 +49,8 @@ export const mainPinMarker = L.marker(
   },
 );
 
-mainPinMarker.addTo(mapTokyo);
-coordinateField.value = DEFAULT_CENTER;
+mainPinMarker.addTo(mapCity);
+coordinateField.value = DEFAULT_CENTER_COORDINATES;
 
 // Set dafault and get main marker's coordinates
 const getCoordinates = (marker) => {
@@ -112,7 +111,7 @@ const drawMarkers = (apartments) => {
   apartments.slice().sort(sortApartments).slice(0, 10).forEach(apartment => {
     makePin(apartment, pinLayer);
   });
-  pinLayer.addTo(mapTokyo);
+  pinLayer.addTo(mapCity);
 };
 
 // Filter
@@ -132,17 +131,17 @@ const priceCheck = (apartment) => {
 
 // Room number filter
 const roomsCheck = (apartment) => {
-  return apartment.offer.rooms === Number(filterRooms.value) || filterRooms.value === 'any';
+  return apartment.offer.rooms === Number(filterRoom.value) || filterRoom.value === 'any';
 };
 
 // Guest number filter
 const guestsCheck = (apartment) => {
-  return apartment.offer.guests === Number(filterGuests.value) || filterGuests.value === 'any';
+  return apartment.offer.guests === Number(filterGuest.value) || filterGuest.value === 'any';
 };
 
 // Features filter
-const compareFeatures = (apartmentFeatures, filterFeatures) => {
-  return filterFeatures.every(el => apartmentFeatures.includes(el));
+const compareFeatures = (apartmentFeatures, filterFeature) => {
+  return filterFeature.every(el => apartmentFeatures.includes(el));
 };
 
 const featureCheck = (apartment) => {
@@ -162,7 +161,7 @@ const mapFilter = (apartments) => {
   );
 };
 
-const onFilterFormChange = (apartments) => {
+const filterFormChange = (apartments) => {
   filterForm.addEventListener('change', _.debounce(
     () => {
       pinLayer.clearLayers();
@@ -176,7 +175,7 @@ export const mapFunctions = () => {
   getApartments((apartments) => {
     activateFilterState();
     drawMarkers(apartments);
-    onFilterFormChange(apartments);
+    filterFormChange(apartments);
     moveMarker(apartments);
   });
 };
