@@ -127,7 +127,6 @@ clearButton.addEventListener('click', (evt) => {
 });
 
 // Photos
-
 // Avatar
 avatarInput.addEventListener('change', () => {
   const avatarFile = avatarInput.files[0];
