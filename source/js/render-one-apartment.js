@@ -1,6 +1,9 @@
 import {makeElement} from './make-element.js';
 import {makeDeclination} from './make-declination.js';
 
+const FLAT_WORDS = ['комната', 'комнаты', 'комнат'];
+const GUEST_WORDS = ['гостя', 'гостей', 'гостей'];
+
 export const renderOneApartment = (element) => {
   const cardTemplate = document.querySelector('#card').content.cloneNode(true).querySelector('.popup');
 
@@ -23,9 +26,6 @@ export const renderOneApartment = (element) => {
       cardTemplate.querySelector('.popup__type').textContent = 'Бунгало';
       break;
   }
-
-  const FLAT_WORDS = ['комната', 'комнаты', 'комнат'];
-  const GUEST_WORDS = ['гостя', 'гостей', 'гостей'];
 
   cardTemplate.querySelector('.popup__text--capacity').textContent = `${element.offer.rooms} ${makeDeclination(element.offer.rooms, FLAT_WORDS)} для ${element.offer.guests} ${makeDeclination(element.offer.guests, GUEST_WORDS)}`;
   cardTemplate.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin}, выезд до ${element.offer.checkout}`;
